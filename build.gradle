@@ -13,14 +13,19 @@ repositories {
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
-    // https://mvnrepository.com/artifact/org.json/json
     compile group: 'org.json', name: 'json', version: '20180813'
     compile group: 'org.jsoup', name: 'jsoup', version:'1.11.3'
+    
+    compile 'com.google.api-client:google-api-client:1.28.0'
+    compile 'com.google.oauth-client:google-oauth-client-jetty:1.28.0'
+    compile 'com.google.apis:google-api-services-drive:v3-rev110-1.23.0'
+    compile group: 'commons-cli', name: 'commons-cli', version: '1.4'
+
 }
 
 task fatJar(type: Jar) {
     manifest {
-        attributes 'Main-Class': 'codes.fepi.FxApp'
+        attributes 'Main-Class': 'codes.fepi.Main'
     }
     baseName = project.name + '-fat'
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }

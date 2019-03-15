@@ -2,7 +2,7 @@ package codes.fepi.core;
 
 import codes.fepi.entities.Video;
 import codes.fepi.global.Properties;
-import javafx.collections.ObservableList;
+import java.util.List;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -59,12 +59,13 @@ public class YTDL {
 			errors.append(line).append("\n");
 		}
 		input.close();
+		process.waitFor();
 		if (process.exitValue() != 0) {
 			throw new Exception(String.format("%s exited with error code %d:\n%s", String.join(" ", builder.command()), process.exitValue(), errors));
 		}
 	}
 
-	public static void downloadVideos(ObservableList<Video> toDownload, AudioFormat format, BiConsumer<Video, Exception> progress, Runnable finished) {
+	public static void downloadVideos(List<Video> toDownload, AudioFormat format, BiConsumer<Video, Exception> progress, Runnable finished) {
 		Thread thread = new Thread(() -> {
 			ThreadPoolExecutor threadPool = (ThreadPoolExecutor) Executors.newFixedThreadPool(3);
 			for (Video video : toDownload) {
@@ -82,7 +83,6 @@ public class YTDL {
 	}
 
 	private static void downloadSingleVideo(Video toDownload, AudioFormat format, BiConsumer<Video, Exception> progress) {
-		toDownload.setInProgress(true);
 		List<String> arguments = new LinkedList<>();
 		Path ffmpegPath = Properties.getFfmpegPath();
 		if (ffmpegPath != null) {

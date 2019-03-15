@@ -1,6 +1,6 @@
 package codes.fepi.global;
 
-import codes.fepi.FxApp;
+import codes.fepi.Main;
 
 import java.net.URISyntaxException;
 import java.nio.file.Path;
@@ -14,7 +14,7 @@ public class Properties {
 
 	static {
 		try {
-			folder = Paths.get(FxApp.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParent();
+			folder = Paths.get(Main.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParent();
 			win = System.getProperty("os.name").toLowerCase().contains("win");
 		} catch (URISyntaxException e) {
 			e.printStackTrace();

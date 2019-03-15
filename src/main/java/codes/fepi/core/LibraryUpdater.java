@@ -33,6 +33,7 @@ public class LibraryUpdater {
 		updaterThread.start();
 	}
 
+	// code not needed
 	public static void updateFFMPEG(Consumer<Exception> finished) {
 		Thread updaterThread = new Thread(() -> {
 			if (!Properties.win) {
