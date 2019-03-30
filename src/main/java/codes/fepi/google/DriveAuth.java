@@ -51,7 +51,12 @@ public class DriveAuth {
                 .setAccessType("offline")
                 .build();
         LocalServerReceiver receiver = new LocalServerReceiver.Builder().setPort(8080).setCallbackPath("/callback").build();
-        return new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
+	    Credential credential = flow.loadCredential("user");
+	    credential.refreshToken();
+	    if(credential.getExpiresInSeconds() != null && credential.getExpiresInSeconds() < 60) {
+	    	return new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
+	    }
+	    return credential;
     }
 
     public static Drive getService() throws IOException, GeneralSecurityException {
