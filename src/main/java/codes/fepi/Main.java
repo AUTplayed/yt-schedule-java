@@ -34,9 +34,11 @@ public class Main {
 		PARENT_FOLDER_ID = cli.getOptionValue("parent");
 
 		deleteDir(Properties.getOutputPath());
+		Properties.getYtdlPath().toFile().delete();
 
 		LibraryUpdater.updateYTDL((out) -> {
 			if (out != null) out.printStackTrace();
+			Properties.getYtdlPath().toFile().setExecutable(true);
 			YTDL.checkPlaylist(URI.create(PLAYLIST_URI),
 					(playlistVideos) -> {
 						List<Video> toDownload = playlistVideos.stream().filter(Video::isDownload).collect(Collectors.toList());
