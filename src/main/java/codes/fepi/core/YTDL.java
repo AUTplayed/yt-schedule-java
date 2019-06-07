@@ -67,7 +67,7 @@ public class YTDL {
 
 	public static void downloadVideos(List<Video> toDownload, AudioFormat format, BiConsumer<Video, Exception> progress, Runnable finished) {
 		Thread thread = new Thread(() -> {
-			ThreadPoolExecutor threadPool = (ThreadPoolExecutor) Executors.newFixedThreadPool(3);
+			ThreadPoolExecutor threadPool = (ThreadPoolExecutor) Executors.newFixedThreadPool(1);
 			for (Video video : toDownload) {
 				threadPool.submit(() -> downloadSingleVideo(video, format, progress));
 			}
@@ -93,7 +93,7 @@ public class YTDL {
 		arguments.add("-x");
 		arguments.add("--audio-format");
 		arguments.add(format.name());
-		arguments.add("--restrict-filenames");
+		//arguments.add("--restrict-filenames");
 		arguments.add(Properties.ytBaseUrl + toDownload.getUrl());
 		try {
 			executeCommand((line) -> {
