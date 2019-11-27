@@ -2,10 +2,12 @@ package codes.fepi.core;
 
 import codes.fepi.entities.Video;
 import codes.fepi.global.Properties;
+import codes.fepi.google.DriveAuth;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,5 +53,13 @@ public class PlaylistStatus {
 			playlistLines.add(video.getUrl());
 		}
 		Files.write(playlist, playlistLines);
+	}
+
+	public static void uploadPlaylistFile(String fileId) {
+		try {
+			DriveUpload.updateFile(playlist, "text/plain", fileId, DriveAuth.getService());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }

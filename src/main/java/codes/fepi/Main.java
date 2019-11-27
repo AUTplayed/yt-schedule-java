@@ -23,15 +23,18 @@ public class Main {
 
 	private static String PLAYLIST_URI = "";
 	private static String PARENT_FOLDER_ID = "";
+	private static String PLAYLIST_FILE_ID = "";
 
 	public static void main(String args[]) throws Exception {
 		CommandLine cli = new DefaultParser().parse(new Options()
 						.addRequiredOption("u", "uri", true, "playlist uri to download")
-						.addRequiredOption("p", "parent", true, "parent folder id"),
+						.addRequiredOption("p", "parent", true, "parent folder id")
+						.addRequiredOption("f", "file", true, "playlist file id"),
 				args);
 
 		PLAYLIST_URI = cli.getOptionValue("uri");
 		PARENT_FOLDER_ID = cli.getOptionValue("parent");
+		PLAYLIST_FILE_ID = cli.getOptionValue("file");
 
 		deleteDir(Properties.getOutputPath());
 		Properties.getYtdlPath().toFile().delete();
@@ -85,6 +88,7 @@ public class Main {
 			DriveUpload.uploadDir(Properties.getOutputPath(), PARENT_FOLDER_ID);
 			// update playlist file
 			PlaylistStatus.updateDownloadedVideos(succVideos);
+			PlaylistStatus.uploadPlaylistFile(PLAYLIST_FILE_ID);
 			System.out.println("finished");
 		} catch (IOException ex) {
 			ex.printStackTrace();

@@ -18,10 +18,10 @@ public class DriveUpload {
 	public static void uploadDir(Path dir, String folderId) {
 		try {
 			Drive service = DriveAuth.getService();
-			Files.walkFileTree(Properties.getOutputPath(), new SimpleFileVisitor<Path>() {
+			Files.walkFileTree(dir, new SimpleFileVisitor<Path>() {
 				@Override
 				public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-					uploadSingle(file, folderId, service);
+					uploadSingle(file, "audio/mp3", folderId, service);
 					Files.delete(file);
 					return FileVisitResult.CONTINUE;
 				}
@@ -37,16 +37,25 @@ public class DriveUpload {
 		}
 	}
 
-	private static void uploadSingle(Path file, String folderId, Drive service) {
+	private static void uploadSingle(Path file, String contentType, String folderId, Drive service) {
 		try {
 			File fileMetadata = new File()
 					.setName(file.getFileName().toString())
 					.setParents(Collections.singletonList(folderId));
 			service.files().create(fileMetadata,
-					new FileContent("audio/mp3", file.toFile()))
+					new FileContent(contentType, file.toFile()))
 					.setFields("parents")
 					.execute();
 			System.out.println("uploaded " + file.getFileName().toString());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static void updateFile(Path file, String contenType, String fileId, Drive service) {
+		File fileMetadata = new File().setName(file.getFileName().toString());
+		try {
+			service.files().update(fileId, fileMetadata, new FileContent(contenType, file.toFile())).execute();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
