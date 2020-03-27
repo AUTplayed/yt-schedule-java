@@ -3,6 +3,7 @@ package codes.fepi;
 import codes.fepi.core.*;
 import codes.fepi.entities.Video;
 import codes.fepi.global.Properties;
+import com.google.common.base.Strings;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
@@ -24,6 +25,7 @@ public class Main {
 	private static String PLAYLIST_URI = "";
 	private static String PARENT_FOLDER_ID = "";
 	private static String PLAYLIST_FILE_ID = "";
+	private static String PROXY = "";
 
 	public static void main(String args[]) throws Exception {
 		CommandLine cli = new DefaultParser().parse(new Options()
@@ -35,6 +37,7 @@ public class Main {
 		PLAYLIST_URI = cli.getOptionValue("uri");
 		PARENT_FOLDER_ID = cli.getOptionValue("parent");
 		PLAYLIST_FILE_ID = cli.getOptionValue("file");
+		PROXY = Strings.nullToEmpty(cli.getOptionValue("proxy"));
 
 		deleteDir(Properties.getOutputPath());
 		Properties.getYtdlPath().toFile().delete();
@@ -46,7 +49,7 @@ public class Main {
 					(playlistVideos) -> {
 						List<Video> toDownload = playlistVideos.stream().filter(Video::isDownload).collect(Collectors.toList());
 						List<Video> succVideos = new ArrayList<>(toDownload.size());
-						YTDL.downloadVideos(toDownload, AudioFormat.mp3, (video, exception) -> {
+						YTDL.downloadVideos(toDownload, AudioFormat.mp3, PROXY, (video, exception) -> {
 									if (exception != null) {
 										exception.printStackTrace();
 									} else {

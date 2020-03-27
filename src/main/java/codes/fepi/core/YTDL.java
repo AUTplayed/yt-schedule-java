@@ -65,11 +65,11 @@ public class YTDL {
 		}
 	}
 
-	public static void downloadVideos(List<Video> toDownload, AudioFormat format, BiConsumer<Video, Exception> progress, Runnable finished) {
+	public static void downloadVideos(List<Video> toDownload, AudioFormat format, String proxyArg, BiConsumer<Video, Exception> progress, Runnable finished) {
 		Thread thread = new Thread(() -> {
 			ThreadPoolExecutor threadPool = (ThreadPoolExecutor) Executors.newFixedThreadPool(1);
 			for (Video video : toDownload) {
-				threadPool.submit(() -> downloadSingleVideo(video, format, progress));
+				threadPool.submit(() -> downloadSingleVideo(video, format, proxyArg, progress));
 			}
 			try {
 				threadPool.shutdown();
@@ -82,7 +82,7 @@ public class YTDL {
 		thread.start();
 	}
 
-	private static void downloadSingleVideo(Video toDownload, AudioFormat format, BiConsumer<Video, Exception> progress) {
+	private static void downloadSingleVideo(Video toDownload, AudioFormat format, String proxyArg, BiConsumer<Video, Exception> progress) {
 		List<String> arguments = new LinkedList<>();
 		Path ffmpegPath = Properties.getFfmpegPath();
 		if (ffmpegPath != null) {
@@ -93,6 +93,8 @@ public class YTDL {
 		arguments.add("-x");
 		arguments.add("--audio-format");
 		arguments.add(format.name());
+		arguments.add("--proxy");
+		arguments.add(proxyArg);
 		//arguments.add("--restrict-filenames");
 		arguments.add(Properties.ytBaseUrl + toDownload.getUrl());
 		try {
