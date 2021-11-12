@@ -12,29 +12,26 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 public class DriveUpload {
-	public static void uploadDir(Path dir, String folderId) {
-		try {
-			Drive service = DriveAuth.getService();
-			Files.walkFileTree(dir, new SimpleFileVisitor<Path>() {
-				@Override
-				public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-					uploadSingle(file, "audio/mp3", folderId, service);
-					Files.delete(file);
-					return FileVisitResult.CONTINUE;
-				}
+	public static void uploadDir(Path dir, String folderId) throws IOException, GeneralSecurityException {
+		Drive service = DriveAuth.getService();
+		Files.walkFileTree(dir, new SimpleFileVisitor<Path>() {
+			@Override
+			public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+				uploadSingle(file, "audio/mp3", folderId, service);
+				Files.delete(file);
+				return FileVisitResult.CONTINUE;
+			}
 
-				@Override
-				public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
-					Files.delete(dir);
-					return FileVisitResult.CONTINUE;
-				}
-			});
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+			@Override
+			public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+				Files.delete(dir);
+				return FileVisitResult.CONTINUE;
+			}
+		});
 	}
 
 	private static void uploadSingle(Path file, String contentType, String folderId, Drive service) {

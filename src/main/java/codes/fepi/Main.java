@@ -3,6 +3,8 @@ package codes.fepi;
 import codes.fepi.core.*;
 import codes.fepi.entities.Video;
 import codes.fepi.global.Properties;
+import codes.fepi.google.DriveAuth;
+import com.google.api.services.drive.Drive;
 import com.google.common.base.Strings;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
@@ -16,6 +18,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -31,7 +34,8 @@ public class Main {
 		CommandLine cli = new DefaultParser().parse(new Options()
 						.addRequiredOption("u", "uri", true, "playlist uri to download")
 						.addRequiredOption("p", "parent", true, "parent folder id")
-						.addRequiredOption("f", "file", true, "playlist file id"),
+						.addRequiredOption("f", "file", true, "playlist file id")
+						.addOption("r", "proxy", true, "proxy url"),
 				args);
 
 		PLAYLIST_URI = cli.getOptionValue("uri");
@@ -93,7 +97,7 @@ public class Main {
 			PlaylistStatus.updateDownloadedVideos(succVideos);
 			PlaylistStatus.uploadPlaylistFile(PLAYLIST_FILE_ID);
 			System.out.println("finished");
-		} catch (IOException ex) {
+		} catch (IOException | GeneralSecurityException ex) {
 			ex.printStackTrace();
 		}
 	}
